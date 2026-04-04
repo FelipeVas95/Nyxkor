@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     nano \
     vim \
     curl \
+    sudo \
     wget \
     unzip \
     zip \
@@ -22,8 +23,15 @@ RUN apt-get update && apt-get install -y \
 # 2. Configuración de PHP para permitir archivos más grandes
 RUN echo "upload_max_filesize = 64M \npost_max_size = 64M" > /usr/local/etc/php/conf.d/uploads.ini
 
-# 3. Permisos: Aseguramos que el servidor pueda escribir en el volumen
-# Esto ayuda a evitar el error de "Operation not permitted" en el arranque
-RUN chown -R www-data:www-data /var/www/html
+# 3. Gestión de usuario y permisos
+# Añadimos al usuario adm-wb al grupo sudo para que puedas administrar si es necesario
+RUN useradd -m -G www-data -s /bin/bash adm-wb
 
+# Ajustamos permisos iniciales
+RUN chown -R adm-wb:www-data /var/www/html
+RUN git config --system --add safe.directory /var/www/html
 WORKDIR /var/www/html
+
+# 5. (Opcional) Cambiar el usuario por defecto para VS Code
+# Si quieres que al abrir la terminal siempre seas adm-wb:
+USER adm-wb

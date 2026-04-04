@@ -14,9 +14,10 @@ services:
       MYSQL_PASSWORD: password_wp
   wordpress:
     build:
+      context: ..
       dockerfile: conf-docker/Dockerfile
     container_name: wp_app
-    user: "1000:33" # Usuario 1000, grupo www-data
+    user: "adm-wb"
     depends_on:
       - db
     ports:
@@ -29,6 +30,6 @@ services:
       WORDPRESS_DB_NAME: wordpress
     volumes:
       - ../:/var/www/html/ # Mapeo directo para desarrollo
-      
+  
 volumes:
   db_data: 

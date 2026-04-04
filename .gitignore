@@ -1,54 +1,53 @@
-# --- WordPress Core ---
-# No subimos el núcleo porque Docker lo descarga solo
-# Pero permitimos carpetas de desarrollo personalizadas
-/*
-!wp-content/
-!conf-docker/
-!setup.sh
-!.gitignore
-
-# --- WordPress Content ---
-wp-admin/
-wp-includes/
-index.php
-license.txt
-readme.html
-wp-activate.php
-wp-blog-header.php
-wp-comments-post.php
-wp-config-sample.php
-wp-cron.php
-wp-links-opml.php
-wp-load.php
-wp-login.php
-wp-mail.php
-wp-settings.php
-wp-signup.php
-wp-trackback.php
-xmlrpc.php
-
-# --- Archivos Sensibles (Seguridad) ---
-wp-config.php
-.env
-*.sql
-*.bak
-
-# --- Directorios de Docker ---
-# Ignoramos la carpeta donde MySQL guarda los datos físicos
+# --- Docker e Infraestructura ---
+# Ignora los datos reales de la base de datos (¡Muy importante!)
 conf-docker/db_data/
-# --- Contenido de Usuario (Opcional) ---
-# Si no quieres subir las imágenes de la biblioteca de medios:
-wp-content/uploads/
-# Si no quieres subir los plugins/temas que instalas desde el panel:
-# wp-content/plugins/
-# wp-content/themes/
-
-# --- Logs y Caché ---
+*.sql
 *.log
+.vscode
+# --- WordPress Core (No se versiona, lo da la imagen) ---
+/wp-admin/
+/wp-includes/
+/index.php
+/license.txt
+/readme.html
+/wp-activate.php
+/wp-blog-header.php
+/wp-comments-post.php
+/wp-config-sample.php
+/wp-cron.php
+/wp-links-opml.php
+/wp-load.php
+/wp-login.php
+/wp-mail.php
+/wp-settings.php
+/wp-signup.php
+/wp-trackback.php
+/xmlrpc.php
+/wp-config.php
+
+# --- Contenido de Usuario (wp-content) ---
+# Ignoramos archivos generados por el servidor y caché
 wp-content/cache/
 wp-content/backups/
-.htaccess
+wp-content/upgrade/
+wp-content/uploads/
+wp-content/languages/
+# Si quieres ignorar plugins y temas de terceros que instalas desde el panel:
+# wp-content/plugins/hello.php
+# wp-content/plugins/akismet/
 
-# --- Sistemas Operativos ---
+# --- Archivos del Sistema y Editores ---
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
+.env
+
+# --- Lo que SÍ queremos mantener (Excepciones) ---
+# Si por alguna razón ignoras wp-content arriba, estas reglas aseguran 
+# que tus desarrollos propios se queden:
+!wp-content/themes/mi-tema-personalizado/
+!wp-content/plugins/mi-plugin-de-pagos/
+!conf-docker/Dockerfile
+!conf-docker/docker-compose.yml
+!setup.sh

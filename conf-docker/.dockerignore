@@ -1,3 +1,6 @@
 .git
+.gitignore
+conf-docker/db_data
+*.sql
+.vscode
 node_modules
-db_data/
