@@ -1,0 +1,54 @@
+# --- WordPress Core ---
+# No subimos el núcleo porque Docker lo descarga solo
+# Pero permitimos carpetas de desarrollo personalizadas
+/*
+!wp-content/
+!conf-docker/
+!setup.sh
+!.gitignore
+
+# --- WordPress Content ---
+wp-admin/
+wp-includes/
+index.php
+license.txt
+readme.html
+wp-activate.php
+wp-blog-header.php
+wp-comments-post.php
+wp-config-sample.php
+wp-cron.php
+wp-links-opml.php
+wp-load.php
+wp-login.php
+wp-mail.php
+wp-settings.php
+wp-signup.php
+wp-trackback.php
+xmlrpc.php
+
+# --- Archivos Sensibles (Seguridad) ---
+wp-config.php
+.env
+*.sql
+*.bak
+
+# --- Directorios de Docker ---
+# Ignoramos la carpeta donde MySQL guarda los datos físicos
+conf-docker/db_data/
+# --- Contenido de Usuario (Opcional) ---
+# Si no quieres subir las imágenes de la biblioteca de medios:
+wp-content/uploads/
+# Si no quieres subir los plugins/temas que instalas desde el panel:
+# wp-content/plugins/
+# wp-content/themes/
+
+# --- Logs y Caché ---
+*.log
+wp-content/cache/
+wp-content/backups/
+.htaccess
+
+# --- Sistemas Operativos ---
+.DS_Store
+Thumbs.db

@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# --- CONFIGURACIÓN ---
+USUARIO="adm-wb"
+# Cambiamos el nombre a tu carpeta real
+CARPETA_PROYECTO="./Nyxkor"
+
+echo "🚀 Iniciando automatización de entorno WordPress (Raíz Completa)..."
+
+# 1. Crear el usuario si no existe (con manejo de errores)
+if ! id "$USUARIO" >/dev/null 2>&1; then
+    sudo adduser --disabled-password --gecos "" "$USUARIO"
+    echo "✅ Usuario $USUARIO creado."
+else
+    echo "ℹ️ El usuario $USUARIO ya existe."
+fi
+
+# 2. Asegurar que pertenece a www-data (para que Apache pueda leer)
+sudo usermod -aG www-data "$USUARIO"
+
+# 3. Crear la carpeta raíz si no existe
+mkdir -p "$CARPETA_PROYECTO"
+
+# 4. Asignar dueños: Tu usuario manda, www-data ayuda
+# Esto repara lo que root hizo con Git antes
+sudo chown -R "$USUARIO:www-data" "$CARPETA_PROYECTO"
+
+# 5. Aplicar permisos estándar de WordPress
+echo "📂 Aplicando permisos de archivos y carpetas..."
+find "$CARPETA_PROYECTO" -type d -exec chmod 755 {} \;
+find "$CARPETA_PROYECTO" -type f -exec chmod 644 {} \;
+
+# 6. Permisos especiales para carpetas de escritura (Uploads)
+# Si la carpeta ya existe dentro de Nyxkor, le damos permisos de grupo
+if [ -d "$CARPETA_PROYECTO/wp-content/uploads" ]; then
+    chmod -R 775 "$CARPETA_PROYECTO/wp-content/uploads"
+    echo "📸 Carpeta de uploads preparada para subidas."
+fi
+
+# 7. Protección extra para Git (Solo tú entras aquí)
+if [ -d "$CARPETA_PROYECTO/.git" ]; then
+    sudo chown -R "$USUARIO:$USUARIO" "$CARPETA_PROYECTO/.git"
+    chmod -R 770 "$CARPETA_PROYECTO/.git"
+    echo "🛡️  Repositorio Git protegido y asignado a $USUARIO."
+fi
+
+echo "---"
+echo "✅ Todo listo. Tu carpeta '$CARPETA_PROYECTO' está vinculada a $USUARIO."
+echo "⚠️  RECUERDA: En tu docker-compose.yml usa: - $CARPETA_PROYECTO:/var/www/html" como ejecuto esto 
