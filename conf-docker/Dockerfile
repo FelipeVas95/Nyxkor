@@ -1,7 +1,7 @@
 # Usamos la imagen oficial de WordPress con Apache
 FROM wordpress:latest
 
-# 1. Instalamos librerías de PHP y herramientas útiles
+# 1. Instalamos librerías de PHP y herramientas útiles Nyжor
 RUN apt-get update && apt-get install -y \
     libbz2-dev \
     git \
@@ -33,17 +33,18 @@ RUN usermod -s /bin/rbash adm-wb
 
 # Ajustamos permisos iniciales
 RUN chown -R adm-wb:www-data /var/www/html
+
 RUN git config --system --add safe.directory /var/www/html
 WORKDIR /var/www/html
 
 # 5. (Opcional) Cambiar el usuario por defecto para VS Code
 # Si quieres que al abrir la terminal siempre seas adm-wb:
-USER adm-wb
+#USER adm-wb
 
-
-
+#  docker-compose up -d --build
+# docker exec -u root -it wp_app bash
 
 # chmod 750 /home
 #chmod 700 /root
-#find /ruta/a/tu/codigo -type d -exec chmod 755 {} +
-#find /ruta/a/tu/codigo -type f -exec chmod 644 {} +
+#find /var/www/html -type d -exec chmod 755 {} +
+#find /var/www/html -type f -exec chmod 644 {} +

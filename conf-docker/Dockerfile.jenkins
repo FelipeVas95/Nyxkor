@@ -1,0 +1,39 @@
+# Usamos Debian Bookworm (versión estable actual) en su variante ligera
+FROM debian:bookworm-slim
+
+# Variables de entorno para Jenkins
+ENV JENKINS_HOME=/var/jenkins_home \
+    JENKINS_VERSION=latest \
+    JENKINS_WAR_URL=https://get.jenkins.io/war-stable/latest/jenkins.war
+
+# Instalamos las dependencias necesarias: Java 17, wget, git, curl
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-17-jre-headless \
+    wget \
+    curl \
+    git \
+    openssh-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Creamos el usuario 'jenkins' y su directorio base
+RUN useradd -d "${JENKINS_HOME}" -m -s /bin/bash jenkins
+
+# Descargamos el archivo ejecutable de Jenkins (.war)
+RUN mkdir -p /usr/share/jenkins \
+    && curl -fsSL ${JENKINS_WAR_URL} -o /usr/share/jenkins/jenkins.war
+
+# Ajustamos los permisos para el usuario jenkins
+RUN chown -R jenkins:jenkins "${JENKINS_HOME}" /usr/share/jenkins
+
+# Exponemos el puerto de la interfaz web (8080) y el de agentes (50000)
+EXPOSE 8080
+EXPOSE 50000
+
+# Cambiamos al usuario jenkins por seguridad (evitar correr como root)
+USER jenkins
+
+# Definimos el directorio de trabajo
+WORKDIR ${JENKINS_HOME}
+
+# Comando por defecto para iniciar Jenkins
+CMD ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
